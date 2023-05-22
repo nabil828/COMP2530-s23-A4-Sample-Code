@@ -1,37 +1,63 @@
-function setupGrid() {
-  var cardData = [];
-  // Example usage: Constructing an array of card data with Pokémon URLs
-  constructCardData(6)
-    .then((imageData) => {
-      cardData = imageData;
-      console.log(cardData);
-      // Call a function or perform any other action that relies on imageData here
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+// function setupGrid() {
+//   // Example usage: Constructing an array of card data with Pokémon URLs
+//   constructCardData(6)
+//     .then((imageData) => {
+//       console.log(imageData);
+//       // Call a function or perform any other action that relies on imageData here
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//     });
 
 
-  // var imageData = [
-  //   { id: "img1", frontFace: "001.png" },
-  //   { id: "img2", frontFace: "002.png" },
-  //   { id: "img3", frontFace: "003.png" },
-  //   { id: "img4", frontFace: "001.png" },
-  //   { id: "img5", frontFace: "002.png" },
-  //   { id: "img6", frontFace: "003.png" },
-  // ];
-  var gameGrid = $('#game_grid');
+//   var cardData = [
+//     { id: "img1", frontFace: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/665.png" },
+//     { id: "img2", frontFace: "002.png" },
+//     { id: "img3", frontFace: "003.png" },
+//     { id: "img4", frontFace: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/665.png" },
+//     { id: "img5", frontFace: "002.png" },
+//     { id: "img6", frontFace: "003.png" },
+//   ];
+//   var gameGrid = $('#game_grid');
 
-  for (var i = 0; i < cardData.length; i++) {
-    var card = $('<div>').addClass('card');
-    var frontFace = $('<img>').attr('id', cardData[i].id).addClass('front_face').attr('src', cardData[i].frontFace).attr('alt', '');
-    var backFace = $('<img>').addClass('back_face').attr('src', 'back.webp').attr('alt', '');
+//   for (var i = 0; i < cardData.length; i++) {
+//     var card = $('<div>').addClass('card');
+//     var frontFace = $('<img>').attr('id', cardData[i].id).addClass('front_face').attr('src', cardData[i].frontFace).attr('alt', '');
+//     var backFace = $('<img>').addClass('back_face').attr('src', 'back.webp').attr('alt', '');
 
-    card.append(frontFace);
-    card.append(backFace);
-    gameGrid.append(card);
-  }
+//     card.append(frontFace);
+//     card.append(backFace);
+//     gameGrid.append(card);
+//   }
+// }
+
+async function setupGrid() {
+  return new Promise((resolve, reject) => {
+    constructCardData(6)
+      .then((cardData) => {
+        console.log(cardData);
+        var gameGrid = $('#game_grid');
+
+        for (var i = 0; i < cardData.length; i++) {
+          var card = $('<div>').addClass('card');
+          var frontFace = $('<img>').attr('id', cardData[i].id).addClass('front_face').attr('src', cardData[i].frontFace).attr('alt', '');
+          var backFace = $('<img>').addClass('back_face').attr('src', 'back.webp').attr('alt', '');
+
+          card.append(frontFace);
+          card.append(backFace);
+          gameGrid.append(card);
+        }
+        console.log('actual finished');
+
+        // Resolve the promise to indicate setupGrid is complete
+        resolve();
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
+
 
 const fetchPokemonInfo = async (numberOfPokemon) => {
   const pokemonArray = [];
@@ -76,8 +102,9 @@ const constructCardData = async (numberOfCards) => {
   return cardData;
 };
 
-const setup = () => {
-  setupGrid();
+const setup = async () => {
+  await setupGrid();
+
   let firstCard = undefined;
   let secondCard = undefined;
   $(".card").on("click", function () {
