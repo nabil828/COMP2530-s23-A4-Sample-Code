@@ -1,12 +1,12 @@
 function setupGrid() {
-// Example usage: Fetching information for 6 Pokémon
-fetchPokemonInfo(18)
-.then((pokemonArray) => {
-  console.log(pokemonArray);
-})
-.catch((error) => {
-  console.log(error);
-});
+// Example usage: Constructing an array of card data with Pokémon URLs
+constructCardData(6)
+  .then((cardData) => {
+    console.log(cardData);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
   var cardData = [
     { id: 'img1', frontFace: '001.png' },
     { id: 'img2', frontFace: '002.png' },
@@ -51,6 +51,21 @@ const fetchPokemonInfo = async (numberOfPokemon) => {
   console.log(`Fetched ${numberOfPokemon} Pokémon in ${totalTime} milliseconds.`);
 
   return pokemonArray;
+};
+
+// Function to construct an array of card data with Pokémon URLs
+const constructCardData = async (numberOfCards) => {
+  const pokemonUrls = await fetchPokemonInfo(numberOfCards / 2);
+
+  const cardData = [];
+  for (let i = 0; i < numberOfCards; i += 2) {
+    const id = `img${i + 1}`;
+    const frontFace = pokemonUrls[i / 2];
+
+    cardData.push({ id, frontFace }, { id: `img${i + 2}`, frontFace });
+  }
+
+  return cardData;
 };
 
 const setup = () => {
